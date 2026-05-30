@@ -10,6 +10,11 @@ gem "stimulus-rails"
 gem "bootsnap", require: false
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "devise"
+gem "dotenv-rails", groups: [ :development, :test ]
+gem "strava-ruby-client"
+gem "omniauth-strava"
+gem "omniauth-rails_csrf_protection"
+gem "multi_json"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -18,6 +23,7 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "shoulda-matchers"
+  gem "webmock"
 end
 
 group :development do
