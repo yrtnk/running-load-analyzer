@@ -7,7 +7,7 @@ class User < ApplicationRecord
 
   def self.from_omniauth(auth)
     find_or_initialize_by(strava_uid: auth.uid).tap do |user|
-      user.email                   ||= ""
+      user.email                   ||= "#{auth.uid}@strava.invalid"
       user.strava_access_token     = auth.credentials.token
       user.strava_refresh_token    = auth.credentials.refresh_token
       user.strava_token_expires_at = Time.zone.at(auth.credentials.expires_at)

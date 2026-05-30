@@ -8,7 +8,7 @@ FactoryBot.define do
       strava_access_token     { "access_token_dummy" }
       strava_refresh_token    { "refresh_token_dummy" }
       strava_token_expires_at { 1.hour.from_now }
-      email                   { "" }
+      email                   { "#{strava_uid}@strava.invalid" }
       password                { nil }
     end
 
