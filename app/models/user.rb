@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: [:strava]
+         :omniauthable, omniauth_providers: [ :strava ]
 
   encrypts :strava_access_token, :strava_refresh_token
 
