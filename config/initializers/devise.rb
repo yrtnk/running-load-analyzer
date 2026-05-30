@@ -26,6 +26,11 @@ Devise.setup do |config|
   # with default "from" parameter.
   config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
 
+  config.omniauth :strava,
+                  ENV.fetch("STRAVA_CLIENT_ID", nil),
+                  ENV.fetch("STRAVA_CLIENT_SECRET", nil),
+                  scope: "read,activity:read_all"
+
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
 
