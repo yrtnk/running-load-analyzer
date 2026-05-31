@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_31_052016) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_31_065742) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,6 +32,17 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_31_052016) do
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
+  create_table "target_times", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "target_marathon_time", null: false
+    t.float "target_vdot", null: false
+    t.date "revised_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "revised_at"], name: "index_target_times_on_user_id_and_revised_at", unique: true
+    t.index ["user_id"], name: "index_target_times_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -50,4 +61,5 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_31_052016) do
   end
 
   add_foreign_key "activities", "users"
+  add_foreign_key "target_times", "users"
 end

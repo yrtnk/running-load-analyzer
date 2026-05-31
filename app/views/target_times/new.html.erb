@@ -1,0 +1,42 @@
+<h1>目標タイム設定</h1>
+
+<%= form_with model: @target_time, url: target_times_path do |f| %>
+  <% if @target_time.errors.any? %>
+    <div>
+      <ul>
+        <% @target_time.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <label>目標マラソンタイム</label>
+    <div>
+      <%= f.number_field :target_marathon_hours,
+            value: @target_time.target_marathon_hours,
+            min: 0, max: 9, placeholder: "時間" %>
+      時間
+      <%= f.number_field :target_marathon_minutes,
+            value: @target_time.target_marathon_minutes,
+            min: 0, max: 59, placeholder: "分" %>
+      分
+      <%= f.number_field :target_marathon_seconds,
+            value: @target_time.target_marathon_seconds,
+            min: 0, max: 59, placeholder: "秒" %>
+      秒
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :revised_at, "この目標の開始日" %>
+    <%= f.date_field :revised_at %>
+  </div>
+
+  <div>
+    <%= f.submit "保存する" %>
+  </div>
+<% end %>
+
+<%= link_to "目標タイム一覧へ", target_times_path %>
