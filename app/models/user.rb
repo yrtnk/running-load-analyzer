@@ -3,6 +3,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :strava ]
 
+  has_many :activities, dependent: :destroy
+
   encrypts :strava_access_token, :strava_refresh_token
 
   def self.from_omniauth(auth)
