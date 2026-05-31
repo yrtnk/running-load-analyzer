@@ -58,7 +58,7 @@ module VdotTable
     { vdot: 82, full_marathon_time:  7484, easy_pace: 221, marathon_pace: 178, threshold_pace: 169, cv_pace: 162, interval_pace: 155, repetition_pace: 144 },
     { vdot: 83, full_marathon_time:  7387, easy_pace: 218, marathon_pace: 175, threshold_pace: 166, cv_pace: 160, interval_pace: 153, repetition_pace: 142 },
     { vdot: 84, full_marathon_time:  7290, easy_pace: 215, marathon_pace: 173, threshold_pace: 164, cv_pace: 157, interval_pace: 151, repetition_pace: 140 },
-    { vdot: 85, full_marathon_time:  7193, easy_pace: 212, marathon_pace: 171, threshold_pace: 162, cv_pace: 155, interval_pace: 149, repetition_pace: 138 },
+    { vdot: 85, full_marathon_time:  7193, easy_pace: 212, marathon_pace: 171, threshold_pace: 162, cv_pace: 155, interval_pace: 149, repetition_pace: 138 }
   ].freeze
 
   PACE_COLUMNS = %i[easy_pace marathon_pace threshold_pace cv_pace interval_pace repetition_pace].freeze
