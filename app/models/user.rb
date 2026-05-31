@@ -15,6 +15,10 @@ class User < ApplicationRecord
     end
   end
 
+  def strava_connected?
+    strava_uid.present?
+  end
+
   def strava_token_expired?
     strava_token_expires_at.present? && strava_token_expires_at <= Time.current
   end
