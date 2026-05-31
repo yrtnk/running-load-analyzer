@@ -1,0 +1,42 @@
+<h1>目標タイム一覧</h1>
+
+<%= link_to "新しい目標を設定する", new_target_time_path %>
+
+<% if @target_times.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>開始日</th>
+        <th>目標タイム</th>
+        <th>VDOT</th>
+        <th>Easy (秒/km)</th>
+        <th>Marathon (秒/km)</th>
+        <th>Threshold (秒/km)</th>
+        <th>CV (秒/km)</th>
+        <th>Interval (秒/km)</th>
+        <th>Repetition (秒/km)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @target_times.each do |tt| %>
+        <tr>
+          <td><%= tt.revised_at %></td>
+          <td>
+            <%= tt.target_marathon_hours %>:
+            <%= format("%02d", tt.target_marathon_minutes) %>:
+            <%= format("%02d", tt.target_marathon_seconds) %>
+          </td>
+          <td><%= tt.target_vdot %></td>
+          <td><%= tt.target_pace(:easy) %></td>
+          <td><%= tt.target_pace(:marathon) %></td>
+          <td><%= tt.target_pace(:threshold) %></td>
+          <td><%= tt.target_pace(:cv) %></td>
+          <td><%= tt.target_pace(:interval) %></td>
+          <td><%= tt.target_pace(:repetition) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>目標タイムがまだ設定されていません。</p>
+<% end %>

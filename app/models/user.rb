@@ -4,6 +4,7 @@ class User < ApplicationRecord
          :omniauthable, omniauth_providers: [ :strava ]
 
   has_many :activities, dependent: :destroy
+  has_many :target_times, dependent: :destroy
 
   encrypts :strava_access_token, :strava_refresh_token
 
