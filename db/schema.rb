@@ -10,9 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_26_101001) do
+ActiveRecord::Schema[7.2].define(version: 2026_05_31_052016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "activities", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "strava_activity_id", null: false
+    t.string "name", null: false
+    t.float "distance"
+    t.integer "moving_time"
+    t.integer "elapsed_time"
+    t.float "average_heartrate"
+    t.integer "max_heartrate"
+    t.float "average_pace"
+    t.datetime "start_date"
+    t.string "activity_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "strava_activity_id"], name: "index_activities_on_user_id_and_strava_activity_id", unique: true
+    t.index ["user_id"], name: "index_activities_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -30,4 +48,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_26_101001) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["strava_uid"], name: "index_users_on_strava_uid", unique: true
   end
+
+  add_foreign_key "activities", "users"
 end
