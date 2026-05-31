@@ -34,6 +34,20 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#strava_connected?" do
+    context "when strava_uid is present" do
+      let(:user) { build(:user, :with_strava) }
+
+      it { expect(user.strava_connected?).to be true }
+    end
+
+    context "when strava_uid is nil" do
+      let(:user) { build(:user) }
+
+      it { expect(user.strava_connected?).to be false }
+    end
+  end
+
   describe "#strava_token_expired?" do
     context "when token expires in the future" do
       let(:user) { build(:user, :with_strava, strava_token_expires_at: 1.hour.from_now) }
