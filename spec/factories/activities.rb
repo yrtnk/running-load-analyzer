@@ -11,5 +11,7 @@ FactoryBot.define do
     average_pace { 360.0 }
     start_date { Time.zone.now }
     activity_type { "Run" }
+    load_score { nil }
+    load_category { nil }
   end
 end

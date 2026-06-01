@@ -15,6 +15,7 @@ gem "strava-ruby-client"
 gem "omniauth-strava"
 gem "omniauth-rails_csrf_protection"
 gem "multi_json"
+gem "kaminari"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

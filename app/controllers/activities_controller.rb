@@ -2,7 +2,7 @@ class ActivitiesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @activities = current_user.activities.recent
+    @activities = current_user.activities.recent.page(params[:page]).per(20)
   end
 
   def sync
