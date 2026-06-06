@@ -31,7 +31,7 @@ module RunningLoad
 
     def load_factor_for_pace
       pace = @activity.average_pace
-      target_paces = CATEGORIES.map { |cat| [cat, @target_time.target_pace(cat)] }.to_h
+      target_paces = CATEGORIES.map { |cat| [ cat, @target_time.target_pace(cat) ] }.to_h
 
       if pace >= target_paces[:easy]
         LOAD_HASH[:easy]
