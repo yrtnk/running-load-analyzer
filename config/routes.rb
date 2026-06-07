@@ -18,5 +18,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get "dashboard", to: "dashboard#index", as: :dashboard
+
   root "home#index"
 end

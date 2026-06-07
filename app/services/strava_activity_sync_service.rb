@@ -47,20 +47,24 @@ class StravaActivitySyncService
   end
 
   def save_activities(activities)
+    target_time = @user.target_times.order(revised_at: :desc).first
     count = 0
     activities.each do |raw|
       next unless raw.sport_type == "Run"
       next if Activity.exists?(user_id: @user.id, strava_activity_id: raw.id)
 
-      Activity.create!(build_activity_attrs(raw))
+      Activity.create!(build_activity_attrs(raw, target_time))
       count += 1
     end
     count
   end
 
-  def build_activity_attrs(raw)
+  def build_activity_attrs(raw, target_time)
     distance_km = raw.distance.to_f / 1000.0
     pace = distance_km.positive? ? raw.moving_time.to_f / distance_km : nil
+
+    activity = Activity.new(average_pace: pace, moving_time: raw.moving_time)
+    load_score = RunningLoad::Calculator.new(activity, target_time).call
 
     {
       user_id: @user.id,
@@ -73,7 +77,8 @@ class StravaActivitySyncService
       max_heartrate: raw.max_heartrate,
       average_pace: pace,
       start_date: raw.start_date_local,
-      activity_type: raw.sport_type
+      activity_type: raw.sport_type,
+      load_score: load_score
     }
   end
 end

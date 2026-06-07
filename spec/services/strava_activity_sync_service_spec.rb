@@ -50,6 +50,22 @@ RSpec.describe StravaActivitySyncService do
       it "saves activities to database" do
         expect { service.call }.to change(Activity, :count).by(2)
       end
+
+      context "when user has no target_time" do
+        it "saves activities with nil load_score" do
+          service.call
+          expect(Activity.last.load_score).to be_nil
+        end
+      end
+
+      context "when user has a target_time" do
+        before { create(:target_time, user: user) }
+
+        it "saves activities with calculated load_score" do
+          service.call
+          expect(Activity.last.load_score).to be_present
+        end
+      end
     end
 
     context "when activities already exist (duplicate prevention)" do
