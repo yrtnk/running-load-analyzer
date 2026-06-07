@@ -114,4 +114,82 @@ RSpec.describe RunningLoad::Calculator do
       end
     end
   end
+
+  describe "#category" do
+    context "when target_time is nil" do
+      it "returns nil" do
+        activity = build_activity(average_pace: 270)
+        expect(described_class.new(activity, nil).category).to be_nil
+      end
+    end
+
+    context "when average_pace is nil" do
+      it "returns nil" do
+        activity = instance_double(Activity, average_pace: nil, moving_time: 3600)
+        expect(described_class.new(activity, target_time).category).to be_nil
+      end
+    end
+
+    context "when pace is slower than easy pace" do
+      it "returns 'easy'" do
+        activity = build_activity(average_pace: 400)
+        expect(described_class.new(activity, target_time).category).to eq("easy")
+      end
+    end
+
+    context "when pace equals easy pace boundary" do
+      it "returns 'easy'" do
+        activity = build_activity(average_pace: 360)
+        expect(described_class.new(activity, target_time).category).to eq("easy")
+      end
+    end
+
+    context "when pace is faster than repetition pace" do
+      it "returns 'repetition'" do
+        activity = build_activity(average_pace: 180)
+        expect(described_class.new(activity, target_time).category).to eq("repetition")
+      end
+    end
+
+    context "when pace equals repetition pace boundary" do
+      it "returns 'repetition'" do
+        activity = build_activity(average_pace: 210)
+        expect(described_class.new(activity, target_time).category).to eq("repetition")
+      end
+    end
+
+    context "when pace equals threshold pace" do
+      it "returns 'threshold'" do
+        activity = build_activity(average_pace: 270)
+        expect(described_class.new(activity, target_time).category).to eq("threshold")
+      end
+    end
+
+    context "when pace is between easy and marathon (closer to easy)" do
+      it "returns 'easy'" do
+        # easy=360, marathon=300, 境界=330
+        # pace=340 → |340-300|=40 > |340-360|=20 → easy
+        activity = build_activity(average_pace: 340)
+        expect(described_class.new(activity, target_time).category).to eq("easy")
+      end
+    end
+
+    context "when pace is between easy and marathon (closer to marathon)" do
+      it "returns 'marathon'" do
+        # easy=360, marathon=300, 境界=330
+        # pace=310 → |310-300|=10 < |310-360|=50 → marathon
+        activity = build_activity(average_pace: 310)
+        expect(described_class.new(activity, target_time).category).to eq("marathon")
+      end
+    end
+
+    context "when pace is between threshold and cv (closer to cv)" do
+      it "returns 'cv'" do
+        # threshold=270, cv=255, 境界=262.5
+        # pace=258 → |258-255|=3 < |258-270|=12 → cv
+        activity = build_activity(average_pace: 258)
+        expect(described_class.new(activity, target_time).category).to eq("cv")
+      end
+    end
+  end
 end
