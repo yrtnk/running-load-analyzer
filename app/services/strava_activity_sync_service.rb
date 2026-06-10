@@ -64,7 +64,7 @@ class StravaActivitySyncService
     pace = distance_km.positive? ? raw.moving_time.to_f / distance_km : nil
 
     activity = Activity.new(average_pace: pace, moving_time: raw.moving_time)
-    calculator = RunningLoad::Calculator.new(activity, target_time)
+    load_score = RunningLoad::Calculator.new(activity, target_time).call
 
     {
       user_id: @user.id,
@@ -78,8 +78,7 @@ class StravaActivitySyncService
       average_pace: pace,
       start_date: raw.start_date_local,
       activity_type: raw.sport_type,
-      load_score: calculator.call,
-      load_category: calculator.category
+      load_score: load_score
     }
   end
 end
