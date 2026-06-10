@@ -56,6 +56,11 @@ RSpec.describe StravaActivitySyncService do
           service.call
           expect(Activity.last.load_score).to be_nil
         end
+
+        it "saves activities with nil load_category" do
+          service.call
+          expect(Activity.last.load_category).to be_nil
+        end
       end
 
       context "when user has a target_time" do
@@ -64,6 +69,11 @@ RSpec.describe StravaActivitySyncService do
         it "saves activities with calculated load_score" do
           service.call
           expect(Activity.last.load_score).to be_present
+        end
+
+        it "saves activities with calculated load_category" do
+          service.call
+          expect(Activity.last.load_category).to be_present
         end
       end
     end
