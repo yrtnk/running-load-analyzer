@@ -80,6 +80,4 @@ test:
 #
 production:
   <<: *default
-  database: running_load_analyzer_production
-  username: running_load_analyzer
-  password: <%= ENV["RUNNING_LOAD_ANALYZER_DATABASE_PASSWORD"] %>
+  url: <%= ENV["DATABASE_URL"] %>
