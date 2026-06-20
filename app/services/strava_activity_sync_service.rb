@@ -1,6 +1,9 @@
 class StravaActivitySyncService
   Result = Struct.new(:success?, :imported_count, :error_message)
 
+  # レート制限対策: 1回の同期でactivity詳細を取得する上限件数
+  MAX_DETAIL_FETCHES_PER_SYNC = 10
+
   def initialize(user)
     @user = user
   end
@@ -41,22 +44,60 @@ class StravaActivitySyncService
     )
   end
 
+  def client
+    @client ||= Strava::Api::Client.new(access_token: @user.strava_access_token)
+  end
+
   def fetch_activities
-    client = Strava::Api::Client.new(access_token: @user.strava_access_token)
     client.athlete_activities
   end
 
   def save_activities(activities)
     target_time = @user.target_times.order(revised_at: :desc).first
     count = 0
+    detail_fetch_budget = MAX_DETAIL_FETCHES_PER_SYNC
+
     activities.each do |raw|
       next unless raw.sport_type == "Run"
       next if Activity.exists?(user_id: @user.id, strava_activity_id: raw.id)
 
-      Activity.create!(build_activity_attrs(raw, target_time))
+      activity = Activity.create!(build_activity_attrs(raw, target_time))
       count += 1
+
+      if detail_fetch_budget.positive?
+        detail_fetch_budget -= 1
+        sync_splits!(activity, raw.id, target_time)
+      end
     end
     count
+  end
+
+  def sync_splits!(activity, strava_id, target_time)
+    detail = client.activity(id: strava_id)
+    splits_metric = detail.splits_metric
+    return if splits_metric.blank?
+
+    splits = splits_metric.map do |split|
+      activity.activity_splits.create!(
+        split_index: split.split,
+        distance: split.distance,
+        moving_time: split.moving_time,
+        elapsed_time: split.elapsed_time,
+        average_speed: split.average_speed,
+        elevation_difference: split.elevation_difference
+      )
+    end
+
+    recalculate_load_score!(activity, splits, target_time)
+  rescue StandardError => e
+    Rails.logger.warn "StravaActivitySyncService: splits取得失敗 (activity_id=#{activity.id}, strava_id=#{strava_id}): #{e.message}"
+  end
+
+  def recalculate_load_score!(activity, splits, target_time)
+    return if target_time.nil?
+
+    load_score = splits.sum { |split| split.split_load(target_time) }.round(2)
+    activity.update!(load_score: load_score)
   end
 
   def build_activity_attrs(raw, target_time)
@@ -64,7 +105,7 @@ class StravaActivitySyncService
     pace = distance_km.positive? ? raw.moving_time.to_f / distance_km : nil
 
     activity = Activity.new(average_pace: pace, moving_time: raw.moving_time)
-    load_score = RunningLoad::Calculator.new(activity, target_time).call
+    calculator = RunningLoad::Calculator.new(activity, target_time)
 
     {
       user_id: @user.id,
@@ -78,7 +119,8 @@ class StravaActivitySyncService
       average_pace: pace,
       start_date: raw.start_date_local,
       activity_type: raw.sport_type,
-      load_score: load_score
+      load_score: calculator.call,
+      load_category: calculator.category
     }
   end
 end

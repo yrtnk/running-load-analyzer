@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_01_104245) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_15_223214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,6 +32,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_01_104245) do
     t.string "load_category"
     t.index ["user_id", "strava_activity_id"], name: "index_activities_on_user_id_and_strava_activity_id", unique: true
     t.index ["user_id"], name: "index_activities_on_user_id"
+  end
+
+  create_table "activity_splits", force: :cascade do |t|
+    t.bigint "activity_id", null: false
+    t.integer "split_index", null: false
+    t.float "distance", null: false
+    t.integer "moving_time", null: false
+    t.integer "elapsed_time", null: false
+    t.float "average_speed", null: false
+    t.float "elevation_difference"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["activity_id", "split_index"], name: "index_activity_splits_on_activity_id_and_split_index", unique: true
+    t.index ["activity_id"], name: "index_activity_splits_on_activity_id"
   end
 
   create_table "target_times", force: :cascade do |t|
@@ -63,5 +77,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_01_104245) do
   end
 
   add_foreign_key "activities", "users"
+  add_foreign_key "activity_splits", "activities"
   add_foreign_key "target_times", "users"
 end

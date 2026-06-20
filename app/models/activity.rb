@@ -1,5 +1,6 @@
 class Activity < ApplicationRecord
   belongs_to :user
+  has_many :activity_splits, dependent: :destroy
 
   validates :strava_activity_id, presence: true, uniqueness: { scope: :user_id }
   validates :name, presence: true
