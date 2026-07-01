@@ -27,14 +27,6 @@
 
 ---
 
-## スクリーンショット
-
-| ダッシュボード | Activity 一覧 |
-|---|---|
-| ![dashboard](docs/screenshots/dashboard.png) | ![activities](docs/screenshots/activities.png) |
-
----
-
 ## 負荷スコア（load_score）の仕組み
 
 ### 概要
