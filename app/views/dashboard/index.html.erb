@@ -3,14 +3,7 @@
 <% end %>
 
 <div class="max-w-6xl mx-auto px-4 py-8">
-  <div class="flex items-center justify-between mb-8">
-    <h1 class="text-2xl font-bold text-gray-800">ダッシュボード</h1>
-    <div class="flex items-center gap-4 text-sm text-gray-500">
-      <%= link_to "トレーニングログ", activities_path, class: "hover:text-gray-700 underline" %>
-      <%= link_to "目標タイム設定", target_times_path, class: "hover:text-gray-700 underline" %>
-      <%= button_to "ログアウト", destroy_user_session_path, method: :delete, class: "hover:text-gray-700 underline cursor-pointer bg-transparent border-0 p-0" %>
-    </div>
-  </div>
+  <h1 class="text-2xl font-bold text-gray-800 mb-8">ダッシュボード</h1>
 
   <%# 故障リスクアラート %>
   <% if @load_data[:injury_risk] %>
