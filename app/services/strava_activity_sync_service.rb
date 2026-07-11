@@ -1,5 +1,5 @@
 class StravaActivitySyncService
-  Result = Struct.new(:success?, :imported_count, :error_message)
+  Result = Struct.new(:success?, :imported_count, :error_message, :requires_reauth?)
 
   # レート制限対策: 1回の同期でactivity詳細を取得する上限件数
   MAX_DETAIL_FETCHES_PER_SYNC = 10
@@ -9,15 +9,22 @@ class StravaActivitySyncService
   end
 
   def call
-    return Result.new(false, 0, "Stravaと連携されていません") unless strava_connected?
+    return Result.new(false, 0, "Stravaと連携されていません", false) unless strava_connected?
 
     refresh_token_if_expired!
     activities = fetch_activities
     imported_count = save_activities(activities)
-    Result.new(true, imported_count, nil)
+    Result.new(true, imported_count, nil, false)
+  rescue Strava::Errors::Fault => e
+    if e.response[:status] == 403
+      Rails.logger.warn "StravaActivitySyncService: Forbidden (scope不足の可能性) user_id=#{@user.id}"
+      return Result.new(false, 0, "Stravaの権限が不足しています", true)
+    end
+    Rails.logger.error "StravaActivitySyncService Error: #{e.message}"
+    Result.new(false, 0, e.message, false)
   rescue StandardError => e
     Rails.logger.error "StravaActivitySyncService Error: #{e.message}"
-    Result.new(false, 0, e.message)
+    Result.new(false, 0, e.message, false)
   end
 
   private

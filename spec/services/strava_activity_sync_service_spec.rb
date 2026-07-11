@@ -238,6 +238,35 @@ RSpec.describe StravaActivitySyncService do
       end
     end
 
+    context "when Strava returns 403 Forbidden" do
+      let(:api_client) { instance_double(Strava::Api::Client) }
+      let(:forbidden_error) do
+        fault = Strava::Errors::Fault.new(
+          { status: 403, headers: {}, body: { "message" => "Forbidden", "errors" => [] } }
+        )
+        fault
+      end
+
+      before do
+        allow(Strava::Api::Client).to receive(:new).and_return(api_client)
+        allow(api_client).to receive(:athlete_activities).and_raise(forbidden_error)
+      end
+
+      it "returns failure result" do
+        result = service.call
+        expect(result.success?).to be false
+      end
+
+      it "sets requires_reauth? to true" do
+        result = service.call
+        expect(result.requires_reauth?).to be true
+      end
+
+      it "does not import activities" do
+        expect { service.call }.not_to change(Activity, :count)
+      end
+    end
+
     context "when token is expired" do
       let(:oauth_client) { instance_double(Strava::OAuth::Client) }
       let(:api_client) { instance_double(Strava::Api::Client) }
