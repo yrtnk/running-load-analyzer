@@ -1,6 +1,23 @@
 <div class="max-w-2xl mx-auto px-4 py-12">
   <h1 class="text-3xl font-bold text-gray-800 mb-8">Running Load Analyzer</h1>
 
-  <%= button_to "Stravaでログイン", user_strava_omniauth_authorize_path, method: :post,
-        class: "bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded cursor-pointer" %>
+  <% if user_signed_in? %>
+    <div class="space-y-4">
+      <p class="text-gray-600">ログイン中: <%= current_user.strava_uid %></p>
+
+      <div class="flex flex-col gap-3">
+        <%= link_to "トレーニングログを見る", activities_path,
+              class: "inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded text-center" %>
+        <%= link_to "目標タイム設定", target_times_path,
+              class: "inline-block bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-6 py-3 rounded text-center" %>
+      </div>
+
+      <%= button_to "ログアウト", destroy_user_session_path, method: :delete,
+            class: "mt-8 text-sm text-gray-500 hover:text-gray-700 underline" %>
+    </div>
+  <% else %>
+    <%= button_to "Stravaでログイン", user_strava_omniauth_authorize_path, method: :post,
+          data: { turbo: false },
+          class: "bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded cursor-pointer" %>
+  <% end %>
 </div>
