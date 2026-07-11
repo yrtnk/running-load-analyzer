@@ -1,23 +1,47 @@
-<div class="max-w-2xl mx-auto px-4 py-12">
-  <h1 class="text-3xl font-bold text-gray-800 mb-8">Running Load Analyzer</h1>
+<div class="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+  <div class="w-full max-w-sm">
+    <h1 class="text-2xl font-bold text-gray-800 text-center mb-2">Running Load Analyzer</h1>
+    <p class="text-sm text-gray-500 text-center mb-8">トレーニング負荷を可視化する</p>
 
-  <% if user_signed_in? %>
-    <div class="space-y-4">
-      <p class="text-gray-600">ログイン中: <%= current_user.strava_uid %></p>
+    <% if user_signed_in? %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+        <p class="text-sm text-gray-600 text-center">ログイン中: <span class="font-medium text-gray-800"><%= current_user.email %></span></p>
 
-      <div class="flex flex-col gap-3">
-        <%= link_to "トレーニングログを見る", activities_path,
-              class: "inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded text-center" %>
-        <%= link_to "目標タイム設定", target_times_path,
-              class: "inline-block bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-6 py-3 rounded text-center" %>
+        <div class="flex flex-col gap-3">
+          <%= link_to "トレーニングログを見る", activities_path,
+                class: "block bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-3 rounded-lg text-center text-sm transition-colors" %>
+          <%= link_to "目標タイム設定", target_times_path,
+                class: "block bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-4 py-3 rounded-lg text-center text-sm transition-colors" %>
+        </div>
+
+        <div class="pt-2 border-t border-gray-100 text-center">
+          <%= button_to "ログアウト", destroy_user_session_path, method: :delete,
+                class: "text-sm text-gray-400 hover:text-gray-600 underline" %>
+        </div>
       </div>
 
-      <%= button_to "ログアウト", destroy_user_session_path, method: :delete,
-            class: "mt-8 text-sm text-gray-500 hover:text-gray-700 underline" %>
-    </div>
-  <% else %>
-    <%= button_to "Stravaでログイン", user_strava_omniauth_authorize_path, method: :post,
-          data: { turbo: false },
-          class: "bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-3 rounded cursor-pointer" %>
-  <% end %>
+    <% else %>
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h2 class="text-base font-semibold text-gray-700 mb-5">ログイン</h2>
+
+        <%= form_with url: user_session_path, method: :post, class: "space-y-4" do |f| %>
+          <div>
+            <%= f.label :email, "メールアドレス", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.email_field :email, name: "user[email]", autofocus: true, autocomplete: "email",
+                  placeholder: "example@email.com",
+                  class: "w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+          </div>
+
+          <div>
+            <%= f.label :password, "パスワード", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.password_field :password, name: "user[password]", autocomplete: "current-password",
+                  class: "w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+          </div>
+
+          <%= f.submit "ログイン",
+                class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm cursor-pointer transition-colors" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>

@@ -1,0 +1,7 @@
+<%- if controller_name != 'sessions' %>
+  <p class="mt-4 text-sm text-gray-600"><%= link_to "ログイン", new_session_path(resource_name), class: "text-blue-600 hover:underline" %></p>
+<% end %>
+
+<%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+  <p class="mt-2 text-sm text-gray-600"><%= link_to "パスワードを忘れた方", new_password_path(resource_name), class: "text-blue-600 hover:underline" %></p>
+<% end %>
