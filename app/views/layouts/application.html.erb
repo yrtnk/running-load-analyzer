@@ -18,6 +18,7 @@
   </head>
 
   <body>
+    <%= render "shared/nav" if user_signed_in? %>
     <% flash.each do |type, message| %>
       <% next if type == "reauth_required" %>
       <p class="flash flash--<%= type %>"><%= message %></p>

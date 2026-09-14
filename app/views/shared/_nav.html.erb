@@ -1,0 +1,16 @@
+<nav class="bg-white shadow mb-6">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <span class="font-bold text-gray-800">Running Load Analyzer</span>
+
+    <div class="flex items-center gap-5 text-sm">
+      <%= link_to "ダッシュボード", dashboard_path,
+            class: "hover:text-blue-600 #{'text-blue-600 font-semibold' if current_page?(dashboard_path)}" %>
+      <%= link_to "トレーニングログ", activities_path,
+            class: "hover:text-blue-600 #{'text-blue-600 font-semibold' if current_page?(activities_path)}" %>
+      <%= link_to "目標タイム設定", target_times_path,
+            class: "hover:text-blue-600 #{'text-blue-600 font-semibold' if current_page?(target_times_path)}" %>
+      <%= button_to "ログアウト", destroy_user_session_path, method: :delete,
+            class: "hover:text-blue-600 cursor-pointer bg-transparent border-0 p-0" %>
+    </div>
+  </div>
+</nav>
